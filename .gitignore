@@ -29,6 +29,7 @@ dist/
 build/
 out/
 *.log
+macos_silicon/outputs/*
 
 # Large archive files
 data.rar
