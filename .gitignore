@@ -37,9 +37,18 @@ aist_plusplus_final.zip
 *.rar
 *.zip
 
-# Data folders (if extracted)
-data/extracted/
-experiments/extracted/
+# Data folders - ignore everything except .txt files
+aist_plusplus_final/*
+!aist_plusplus_final/*.txt
+!aist_plusplus_final/**/*.txt
+
+data/*
+!data/*.txt
+!data/**/*.txt
+
+experiments/*
+!experiments/*.txt
+!experiments/**/*.txt
 
 # Python
 __pycache__/
