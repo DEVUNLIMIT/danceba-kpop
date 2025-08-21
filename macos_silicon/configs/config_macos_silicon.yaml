@@ -1,0 +1,186 @@
+# DanceBa Configuration for macOS Silicon (M1/M2/M3)
+# Optimized settings for Apple Silicon unified memory architecture
+
+# Device Configuration
+device:
+  type: "mps"  # Options: "mps", "cpu"
+  memory_fraction: 0.7  # Use 70% of available unified memory
+  allow_tf32: false  # Not applicable for MPS
+
+# Model Configuration
+model:
+  # Model architecture
+  n_layers: 12
+  n_heads: 12
+  d_model: 768
+  d_inner: 3072
+  
+  # Optimization settings
+  use_mixed_precision: true  # FP16 for faster inference
+  compile_model: false  # torch.compile not fully supported on MPS yet
+  use_kv_cache: true  # Key-value caching for autoregressive generation
+  
+  # Mamba-specific fallbacks
+  use_mamba_fallback: true  # Use PyTorch implementation instead of CUDA kernels
+  selective_scan_chunk_size: 16  # Chunk size for selective scan fallback
+
+# Inference Configuration
+inference:
+  # Batch processing
+  batch_size: 1  # Conservative for 8GB unified memory
+  max_batch_size_8gb: 1
+  max_batch_size_16gb: 2
+  max_batch_size_32gb: 4
+  
+  # Sequence processing
+  max_sequence_length: 1024
+  chunk_size: 256  # Process long sequences in chunks
+  overlap_size: 32  # Overlap between chunks
+  
+  # Generation parameters
+  temperature: 0.8
+  top_k: 50
+  top_p: 0.95
+  repetition_penalty: 1.2
+
+# Audio Processing
+audio:
+  sample_rate: 15360
+  hop_length: 512
+  n_mels: 128
+  n_fft: 2048
+  win_length: 2048
+  
+  # Feature extraction
+  use_mel_spectrogram: true
+  use_mfcc: false
+  use_chroma: false
+  
+  # Preprocessing
+  normalize: true
+  trim_silence: true
+  target_db: -20.0
+
+# Memory Optimization
+optimization:
+  # Memory management
+  use_channels_last: true  # Optimize convolution memory layout
+  pin_memory: false  # Not applicable for unified memory
+  gradient_checkpointing: false  # Not needed for inference
+  
+  # Performance tuning
+  num_workers: 0  # DataLoader workers (0 for main process only)
+  enable_graph_optimization: false  # Experimental
+  use_async_processing: false
+  
+  # Caching
+  cache_audio_features: true
+  cache_size_mb: 512
+  
+  # Profiling
+  enable_profiling: false
+  profile_memory: false
+  profile_wait: 1
+  profile_warmup: 1
+  profile_active: 3
+
+# Data Processing
+data:
+  # Input paths
+  audio_dir: "./data/aistpp_test_full_wav"
+  feature_dir: "./data/aist_features_zero_start"
+  
+  # Output paths
+  output_dir: "./outputs"
+  cache_dir: "./cache"
+  log_dir: "./logs"
+  
+  # Processing
+  preprocessing_backend: "librosa"  # Options: "librosa", "torchaudio"
+  float_precision: "float32"  # Options: "float16", "float32"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
+  console: true
+  file: true
+  log_file: "./logs/inference.log"
+  
+  # Metrics logging
+  log_metrics: true
+  metrics_file: "./logs/metrics.json"
+  
+  # Performance monitoring
+  monitor_memory: true
+  monitor_interval: 10  # seconds
+
+# Hardware-Specific Settings
+hardware:
+  # M1 Family
+  m1:
+    batch_size: 1
+    memory_fraction: 0.6
+    mixed_precision: true
+  
+  # M1 Pro/Max
+  m1_pro:
+    batch_size: 2
+    memory_fraction: 0.7
+    mixed_precision: true
+  
+  # M2 Family
+  m2:
+    batch_size: 1
+    memory_fraction: 0.65
+    mixed_precision: true
+  
+  # M2 Pro/Max
+  m2_pro:
+    batch_size: 2
+    memory_fraction: 0.7
+    mixed_precision: true
+  
+  # M3 Family
+  m3:
+    batch_size: 2
+    memory_fraction: 0.7
+    mixed_precision: true
+  
+  # M3 Pro/Max
+  m3_pro:
+    batch_size: 3
+    memory_fraction: 0.75
+    mixed_precision: true
+
+# Experimental Features
+experimental:
+  # Core ML conversion (future)
+  use_coreml: false
+  coreml_compute_units: "ALL"  # Options: "CPU_ONLY", "CPU_AND_GPU", "ALL"
+  
+  # Metal Performance Shaders
+  use_custom_metal_kernels: false
+  
+  # Dynamic batching
+  enable_dynamic_batching: false
+  max_waiting_time: 0.1  # seconds
+  
+  # Streaming inference
+  enable_streaming: false
+  stream_chunk_size: 128
+  stream_overlap: 16
+
+# Validation Settings
+validation:
+  check_input_audio: true
+  max_audio_length: 600  # seconds
+  min_audio_length: 10  # seconds
+  
+  check_memory_usage: true
+  memory_threshold: 0.9  # Warn if using >90% memory
+  
+  validate_output: true
+  output_checks:
+    - "nan_check"
+    - "range_check"
+    - "shape_check"
