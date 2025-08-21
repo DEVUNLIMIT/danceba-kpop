@@ -1,0 +1,68 @@
+# Node modules
+node_modules/
+.npm
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+
+# Build outputs
+dist/
+build/
+out/
+*.log
+
+# Large archive files
+data.rar
+experiments.rar
+aist_plusplus_final.zip
+*.rar
+*.zip
+
+# Data folders (if extracted)
+data/extracted/
+experiments/extracted/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache and temporary files
+.cache/
+tmp/
+temp/
+*.tmp
